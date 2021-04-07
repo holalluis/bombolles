@@ -1,0 +1,49 @@
+<style>body{margin:0;background:black;}</style>
+<canvas></canvas>
+
+<script>
+  let canvas=document.querySelector('canvas');
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+  let c=canvas.getContext('2d');
+
+  class Cercle{
+    constructor(x,y,radi){
+      this.x=x;
+      this.y=y;
+      this.radi=radi*Math.random();
+      this.color=(function(){
+        let r=Math.floor(Math.random()*255);
+        let g=Math.floor(Math.random()*255);
+        let b=Math.floor(Math.random()*255);
+        let a=1;
+        return `rgba(${r},${g},${b},${a})`;
+      })();
+      this.dx=(Math.random()-0.5)*4;
+      this.dy=(Math.random()-0.5)*4;
+    }
+    dibuixa(){
+      c.beginPath();
+      c.arc(this.x,this.y,this.radi,0,2*Math.PI);
+      c.fillStyle=this.color;
+      c.fill();
+    }
+    update(){
+      if(this.x+this.radi>canvas.width  || this.x<this.radi){this.dx*=-1}
+      if(this.y+this.radi>canvas.height || this.y<this.radi){this.dy*=-1}
+      this.x+=this.dx;
+      this.y+=this.dy;
+      this.dibuixa();
+    }
+  }
+
+  let n=1e3; //nombre de bombolles
+  let cercles=[];
+  for(let i=0;i<n;i++){ cercles.push( new Cercle(canvas.width/2,canvas.height/2,30) ) }
+
+  (function animate(){
+    requestAnimationFrame(animate);
+    c.clearRect(0,0,canvas.width,canvas.height);
+    cercles.forEach(c=>c.update());
+  })();
+</script>
